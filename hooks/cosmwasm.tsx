@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { connectKeplr } from 'services/keplr'
-import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
+import { SigningCosmWasmClient, CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 
 export interface ISigningCosmWasmClientContext {
   walletAddress: string
+  client: CosmWasmClient | null
   signingClient: SigningCosmWasmClient | null
   loading: boolean
   error: any
@@ -15,9 +16,10 @@ const PUBLIC_RPC_ENDPOINT = process.env.NEXT_PUBLIC_CHAIN_RPC_ENDPOINT || ''
 const PUBLIC_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID
 
 export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
-  const [walletAddress, setWalletAddress] = useState('')
+  const [client, setClient] = useState<CosmWasmClient | null>(null)
   const [signingClient, setSigningClient] =
     useState<SigningCosmWasmClient | null>(null)
+  const [walletAddress, setWalletAddress] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -36,11 +38,17 @@ export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
       )
 
       // make client
-      const client = await SigningCosmWasmClient.connectWithSigner(
-        PUBLIC_RPC_ENDPOINT,
-        offlineSigner
+      setClient(
+        await CosmWasmClient.connect(PUBLIC_RPC_ENDPOINT)
       )
-      setSigningClient(client)
+
+      // make client
+      setSigningClient(
+        await SigningCosmWasmClient.connectWithSigner(
+          PUBLIC_RPC_ENDPOINT,
+          offlineSigner
+        )
+      )
 
       // get user address
       const [{ address }] = await offlineSigner.getAccounts()
@@ -68,5 +76,6 @@ export const useSigningCosmWasmClient = (): ISigningCosmWasmClientContext => {
     error,
     connectWallet,
     disconnect,
+    client
   }
 }
