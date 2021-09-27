@@ -50,7 +50,7 @@ const Purchase: NextPage = () => {
     signingClient.queryContractSmart(process.env.NEXT_PUBLIC_TOKEN_SALE_CONTRACT, {
       get_price: {},
     }).then((res) => {
-      console.log(res.price.amount) // 1 POOD token = 1000 uJUNO (micro)
+      // 1 POOD token = 1000 uJUNO (micro)
       const price  = convertMicroDenomToDenom(res.price.amount)
       setNumToken(purchaseAmount/price)
     }).catch((error) => {
