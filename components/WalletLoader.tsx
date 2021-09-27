@@ -28,10 +28,7 @@ function WalletLoader({
     return (
       <div className="max-w-full">
         <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="link link-primary link-hover" href="https://nextjs.org">
-            Next.js!
-          </a>
+          Welcome to Poodle Coin Sale!
         </h1>
 
         <p className="mt-3 text-2xl">

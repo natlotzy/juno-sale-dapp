@@ -109,7 +109,7 @@ const Purchase: NextPage = () => {
   }, [purchaseAmount, client])
 
   /**
-   * Gets token info and sets the symbol for display once user enters desired purchase amount of Juno
+   * Gets token info
    */
   useEffect(() => {
     if (!client) return
