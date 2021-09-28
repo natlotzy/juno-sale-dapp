@@ -1,5 +1,5 @@
 function AlertTemplate({ options, message } : {
-  options: object
+  options: { type: string }
   message: string
 }) {
   let alertClassList = 'alert'
@@ -16,6 +16,8 @@ function AlertTemplate({ options, message } : {
         break
       case 'error':
         alertClassList = 'alert alert-error'
+        break
+      default:
         break
     }
   }
