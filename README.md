@@ -1,5 +1,22 @@
 # CW20 Token Sale Template
+
+This is a [Next.js](https://nextjs.org/) project using the [next-cosmwasm-keplr-starter](https://github.com/ebaker/next-cosmwasm-keplr-starter) template.
+
+## Preview
+
+<p align="center" width="100%">
+  <img alt="juno-sale-dapp preview" src="https://i.imgur.com/mXh4mxn.gif">
+</p>
+
 ## Getting Started
+
+First, bootstrap your new project with this example using [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app):
+
+```bash
+npx create-next-app -e https://github.com/natlotzy/juno-sale-dapp my-token-sale-dapp
+# or
+yarn create next-app -e https://github.com/natlotzy/juno-sale-dapp my-token-sale-dapp
+```
 
 Next, setup your `.env` file by copying the example:
 
