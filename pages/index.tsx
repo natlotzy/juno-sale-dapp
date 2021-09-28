@@ -10,6 +10,7 @@ import {
   convertFromMicroDenom
 } from 'util/conversion'
 import { coin } from '@cosmjs/launchpad'
+import { useAlert } from 'react-alert'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || 'ujuno'
 const PUBLIC_TOKEN_SALE_CONTRACT = process.env.NEXT_PUBLIC_TOKEN_SALE_CONTRACT
@@ -18,32 +19,28 @@ const PUBLIC_CW20_CONTRACT = process.env.NEXT_PUBLIC_CW20_CONTRACT
 const Home: NextPage = () => {
   const { walletAddress, signingClient, connectWallet } = useSigningClient()
   const [balance, setBalance] = useState('')
+  const [walletAmount, setWalletAmount] = useState(0)
   const [loadedAt, setLoadedAt] = useState(new Date())
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState('')
-  const [error, setError] = useState('')
   const [tokenInfo, setTokenInfo] = useState(null)
   const [purchaseAmount, setPurchaseAmount] = useState('')
-  const [numToken, setNumToken] = useState(500)
+  const [numToken, setNumToken] = useState(0)
   const [showNumToken, setShowNumToken] = useState(false)
+  const alert = useAlert()
 
   useEffect(() => {
     if (!signingClient || walletAddress.length === 0) return
 
-    setError('')
-    setSuccess('')
-
     // Gets native balance (i.e. Juno balance)
     signingClient.getBalance(walletAddress, PUBLIC_STAKING_DENOM).then((response: any) => {
       const { amount, denom }: { amount: number; denom: string } = response
-      setBalance(
-        `${convertMicroDenomToDenom(amount)} ${convertFromMicroDenom(denom)}`
-      )
+      setBalance(`${convertMicroDenomToDenom(amount)} ${convertFromMicroDenom(denom)}`)
+      setWalletAmount(convertMicroDenomToDenom(amount))
     }).catch((error) => {
-      setError(`Error! ${error.message}`)
+      alert.error(`Error! ${error.message}`)
       console.log('Error signingClient.getBalance(): ', error)
     })
-  }, [signingClient, walletAddress, loadedAt])
+  }, [signingClient, walletAddress, loadedAt, alert])
 
   useEffect(() => {
     if (!signingClient) return
@@ -54,10 +51,10 @@ const Home: NextPage = () => {
     }).then((response) => {
       setTokenInfo(response)
     }).catch((error) => {
-      setError(`Error! ${error.message}`)
+      alert.error(`Error! ${error.message}`)
       console.log('Error signingClient.queryContractSmart() token_info: ', error)
     })
-  }, [signingClient])
+  }, [signingClient, alert])
 
   /**
    * Calculates and sets the number of tokens given the purchase amount divided by the price
@@ -68,25 +65,26 @@ const Home: NextPage = () => {
     signingClient.queryContractSmart(PUBLIC_TOKEN_SALE_CONTRACT, {
       get_price: {},
     }).then((response) => {
-      // i.e. 1 POOD token = 1000 uJUNO (micro)
-      const price  = convertMicroDenomToDenom(response.price.amount)
+      const price  = convertMicroDenomToDenom(response.price.amount) // i.e. 1 POOD token = 1000 uJUNO (micro)
       setNumToken(purchaseAmount/price)
     }).catch((error) => {
-      setError(`Error! ${error.message}`)
+      alert.error(`Error! ${error.message}`)
       console.log('Error signingClient.queryContractSmart() get_price: ', error)
     })
 
     setShowNumToken(!!purchaseAmount)
-  }, [purchaseAmount, signingClient])
+  }, [purchaseAmount, signingClient, alert])
 
   const handleChange = (e) => setPurchaseAmount(e.target.value)
 
   const handlePurchase = (event: MouseEvent<HTMLElement>) => {
     if (!signingClient || walletAddress.length === 0) return
+    if (purchaseAmount > walletAmount) {
+      alert.error(`You do not have enough tokens to make this purchase, maximum you can spend is ${walletAmount}`)
+      return
+    }
 
     event.preventDefault()
-    setError('')
-    setSuccess('')
     setLoading(true)
 
     signingClient?.execute(
@@ -96,20 +94,22 @@ const Home: NextPage = () => {
       undefined,
       [coin(parseInt(convertDenomToMicroDenom(purchaseAmount), 10), 'ujuno')]
     ).then((response) => {
-      console.log('signingClient?.execute() response = ', response)
-
-      // TODO: Success toast message
+      setLoadedAt(new Date())
+      setLoading(false)
+      alert.success('Successfully purchased!')
     }).catch((error) => {
-      setError(`Error! ${error.message}`)
+      setLoading(false)
+      alert.error(`Error! ${error.message}`)
       console.log('Error signingClient?.execute(): ', error)
     })
   }
 
   return (
-    <WalletLoader>
+    <WalletLoader loading={loading}>
       {tokenInfo && (
         <>
           <p className="text-primary">Your wallet has {balance}</p>
+
           <h1 className="text-5xl mt-10 mb-12">
             Buy {tokenInfo.name}
           </h1>
@@ -135,7 +135,7 @@ const Home: NextPage = () => {
           </div>
 
           {showNumToken && (
-            <div className="mt-9">
+            <div className="mt-8">
               You are getting
               <h1 className="text-3xl mt-3 text-primary">
                 {numToken} {tokenInfo.symbol}
