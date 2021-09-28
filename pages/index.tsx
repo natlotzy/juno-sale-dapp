@@ -1,9 +1,7 @@
 import type { NextPage } from 'next'
-import Link from 'next/link'
 import WalletLoader from 'components/WalletLoader'
 import { useSigningClient } from 'contexts/cosmwasm'
 import { useEffect, useState } from 'react'
-import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import {
   convertMicroDenomToDenom, 
   convertDenomToMicroDenom,
@@ -79,6 +77,10 @@ const Home: NextPage = () => {
 
   const handlePurchase = (event: MouseEvent<HTMLElement>) => {
     if (!signingClient || walletAddress.length === 0) return
+    if (!purchaseAmount) {
+      alert.error('Please enter the amount you would like to purchase')
+      return
+    }
     if (purchaseAmount > walletAmount) {
       alert.error(`You do not have enough tokens to make this purchase, maximum you can spend is ${walletAmount}`)
       return

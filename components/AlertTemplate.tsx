@@ -2,9 +2,25 @@ function AlertTemplate({ options, message } : {
   options: object
   message: string
 }) {
+  let alertClassList = 'alert'
+  switch(options.type) {
+    case 'info':
+      alertClassList = 'alert alert-info'
+      break
+    case 'warning':
+      alertClassList = 'alert alert-warning'
+      break
+    case 'success':
+      alertClassList = 'alert alert-success'
+      break
+    case 'error':
+      alertClassList = 'alert alert-error'
+      break
+  }
+  
   return (
     <div
-      className={`alert alert-${options.type}`}
+      className={alertClassList}
       style={{ position: 'relative', bottom: '120px' }}
     >
       <div className="flex-1">
