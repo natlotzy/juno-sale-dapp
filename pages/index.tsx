@@ -9,6 +9,7 @@ import {
   convertDenomToMicroDenom,
   convertFromMicroDenom
 } from 'util/conversion'
+import { coin } from '@cosmjs/launchpad'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || 'ujuno'
 const PUBLIC_TOKEN_SALE_CONTRACT = process.env.NEXT_PUBLIC_TOKEN_SALE_CONTRACT
@@ -88,23 +89,19 @@ const Home: NextPage = () => {
     setSuccess('')
     setLoading(true)
 
-    console.log('connectWallet() walletAddress = ', walletAddress)
-    connectWallet().then(({ walletAddress, signingClient }) => {
-      console.log('inside response, walletAddress = ', walletAddress)
-      return signingClient?.execute(
-        walletAddress, // sender address
-        PUBLIC_TOKEN_SALE_CONTRACT, // token sale contract
-        { buy: {} }, // msg
-        undefined,
-        [coin(parseInt(convertDenomToMicroDenom(purchaseAmount), 10), 'ujuno')]
-      ).then((response) => {
-        console.log('connectWallet() response = ', response)
+    signingClient?.execute(
+      walletAddress, // sender address
+      PUBLIC_TOKEN_SALE_CONTRACT, // token sale contract
+      { buy: {} }, // msg
+      undefined,
+      [coin(parseInt(convertDenomToMicroDenom(purchaseAmount), 10), 'ujuno')]
+    ).then((response) => {
+      console.log('signingClient?.execute() response = ', response)
 
-        // TODO: Success toast message
-      })
+      // TODO: Success toast message
     }).catch((error) => {
       setError(`Error! ${error.message}`)
-      console.log('Error connectWallet(): ', error)
+      console.log('Error signingClient?.execute(): ', error)
     })
   }
 
