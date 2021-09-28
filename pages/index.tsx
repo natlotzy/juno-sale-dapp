@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import WalletLoader from 'components/WalletLoader'
 import { useSigningClient } from 'contexts/cosmwasm'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, MouseEvent, ChangeEvent } from 'react'
 import {
   convertMicroDenomToDenom, 
   convertDenomToMicroDenom,
@@ -11,8 +11,8 @@ import { coin } from '@cosmjs/launchpad'
 import { useAlert } from 'react-alert'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || 'ujuno'
-const PUBLIC_TOKEN_SALE_CONTRACT = process.env.NEXT_PUBLIC_TOKEN_SALE_CONTRACT
-const PUBLIC_CW20_CONTRACT = process.env.NEXT_PUBLIC_CW20_CONTRACT
+const PUBLIC_TOKEN_SALE_CONTRACT = process.env.NEXT_PUBLIC_TOKEN_SALE_CONTRACT || ''
+const PUBLIC_CW20_CONTRACT = process.env.NEXT_PUBLIC_CW20_CONTRACT || ''
 
 const Home: NextPage = () => {
   const { walletAddress, signingClient, connectWallet } = useSigningClient()
@@ -20,8 +20,8 @@ const Home: NextPage = () => {
   const [walletAmount, setWalletAmount] = useState(0)
   const [loadedAt, setLoadedAt] = useState(new Date())
   const [loading, setLoading] = useState(false)
-  const [tokenInfo, setTokenInfo] = useState(null)
-  const [purchaseAmount, setPurchaseAmount] = useState('')
+  const [tokenInfo, setTokenInfo] = useState({ name: '', symbol: '' })
+  const [purchaseAmount, setPurchaseAmount] = useState<any>('')
   const [numToken, setNumToken] = useState(0)
   const [showNumToken, setShowNumToken] = useState(false)
   const alert = useAlert()
@@ -73,7 +73,10 @@ const Home: NextPage = () => {
     setShowNumToken(!!purchaseAmount)
   }, [purchaseAmount, signingClient, alert])
 
-  const handleChange = (e) => setPurchaseAmount(e.target.value)
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { target: { value } } = event
+    setPurchaseAmount(value)
+  }
 
   const handlePurchase = (event: MouseEvent<HTMLElement>) => {
     if (!signingClient || walletAddress.length === 0) return
@@ -108,43 +111,39 @@ const Home: NextPage = () => {
 
   return (
     <WalletLoader loading={loading}>
-      {tokenInfo && (
-        <>
-          <p className="text-primary">Your wallet has {balance}</p>
+      <p className="text-primary">Your wallet has {balance}</p>
 
-          <h1 className="text-5xl mt-10 mb-12">
-            Buy {tokenInfo.name}
+      <h1 className="text-5xl mt-10 mb-12">
+        Buy {tokenInfo.name}
+      </h1>
+
+      <div className="form-control">
+        <div className="relative">
+          <input
+            type="number"
+            id="purchase-amount"
+            placeholder="Amount"
+            step="0.1"
+            className="w-full pr-16 input input-lg input-primary input-bordered font-mono"
+            onChange={handleChange}
+            value={purchaseAmount}
+          /> 
+          <button
+            className="absolute top-0 right-0 rounded-l-none btn btn-lg btn-primary"
+            onClick={handlePurchase}
+          >
+            purchase
+          </button>
+        </div>
+      </div>
+
+      {showNumToken && (
+        <div className="mt-8">
+          You are getting
+          <h1 className="text-3xl mt-3 text-primary">
+            {numToken} {tokenInfo.symbol}
           </h1>
-
-          <div className="form-control">
-            <div className="relative">
-              <input
-                type="number"
-                id="purchase-amount"
-                placeholder="Amount"
-                step="0.1"
-                className="w-full pr-16 input input-lg input-primary input-bordered font-mono"
-                onChange={handleChange}
-                value={purchaseAmount}
-              /> 
-              <button
-                className="absolute top-0 right-0 rounded-l-none btn btn-lg btn-primary"
-                onClick={handlePurchase}
-              >
-                purchase
-              </button>
-            </div>
-          </div>
-
-          {showNumToken && (
-            <div className="mt-8">
-              You are getting
-              <h1 className="text-3xl mt-3 text-primary">
-                {numToken} {tokenInfo.symbol}
-              </h1>
-            </div>
-          )}
-        </>
+        </div>
       )}
     </WalletLoader>
   )

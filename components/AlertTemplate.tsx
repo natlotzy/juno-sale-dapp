@@ -1,6 +1,9 @@
-function AlertTemplate({ options, message } : {
-  options: object
-  message: string
+function AlertTemplate({
+  options,
+  message
+} : {
+  options: any
+  message: any
 }) {
   let alertClassList = 'alert'
   switch(options.type) {
@@ -15,6 +18,8 @@ function AlertTemplate({ options, message } : {
       break
     case 'error':
       alertClassList = 'alert alert-error'
+      break
+    default:
       break
   }
   
