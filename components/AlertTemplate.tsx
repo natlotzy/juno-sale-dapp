@@ -3,19 +3,21 @@ function AlertTemplate({ options, message } : {
   message: string
 }) {
   let alertClassList = 'alert'
-  switch(options.type) {
-    case 'info':
-      alertClassList = 'alert alert-info'
-      break
-    case 'warning':
-      alertClassList = 'alert alert-warning'
-      break
-    case 'success':
-      alertClassList = 'alert alert-success'
-      break
-    case 'error':
-      alertClassList = 'alert alert-error'
-      break
+  if (options.type) {
+    switch(options.type) {
+      case 'info':
+        alertClassList = 'alert alert-info'
+        break
+      case 'warning':
+        alertClassList = 'alert alert-warning'
+        break
+      case 'success':
+        alertClassList = 'alert alert-success'
+        break
+      case 'error':
+        alertClassList = 'alert alert-error'
+        break
+    }
   }
   
   return (
