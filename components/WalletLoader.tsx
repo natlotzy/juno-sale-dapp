@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { useSigningClient } from 'contexts/cosmwasm'
 import Loader from './Loader'
+import Emoji from './Emoji'
 
 function WalletLoader({
   children,
@@ -27,11 +28,16 @@ function WalletLoader({
   if (walletAddress === '') {
     return (
       <div className="max-w-full">
-        <h1 className="text-6xl font-bold">
-          Welcome to Poodle Coin Sale!
+        <h1 className="text-4xl font-bold">
+          Welcome to
+        </h1>
+        <h1 className="mt-4 text-6xl font-bold">
+          <Emoji label="dog" symbol="🐶" />
+          <span>{' Poodle Coin Sale '}</span>
+          <Emoji label="dog" symbol="🐶" />
         </h1>
 
-        <p className="mt-3 text-2xl">
+        <p className="mt-6 text-2xl">
           Get started by installing{' '}
           <a
             className="pl-1 link link-primary link-hover"
@@ -41,16 +47,15 @@ function WalletLoader({
           </a>
         </p>
 
-        <div className="flex flex-wrap items-center justify-around md:max-w-4xl mt-6 sm:w-full">
+        <div className="flex flex-wrap items-center justify-around md:max-w-4xl mt-8 sm:w-full">
           <button
             className="p-6 mt-6 text-left border border-secondary hover:border-primary w-96 rounded-xl hover:text-primary focus:text-primary-focus"
             onClick={connectWallet}
           >
-            <h3 className="text-2xl font-bold">Connect your wallet &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Get your Keplr wallet connected now and start using it with
-              Cosmos.js.
-            </p>
+            <h3 className="text-2xl font-bold">
+              <span className="pr-4">Connect your wallet &rarr;</span>
+              <Emoji label="poodle" symbol="🐩" />
+            </h3>
           </button>
         </div>
       </div>

@@ -1,11 +1,11 @@
 # CW20 Token Sale Template
 
-This is a [Next.js](https://nextjs.org/) project using the [next-cosmwasm-keplr-starter](https://github.com/ebaker/next-cosmwasm-keplr-starter) template.
+This is a [Next.js](https://nextjs.org/) project using the [next-cosmwasm-keplr-starter](https://github.com/ebaker/next-cosmwasm-keplr-starter) template, and built with the [CW20 Sale Contract](https://github.com/ben2x4/cw20-sale-contract).
 
 ## Preview
 
 <p align="center" width="100%">
-  <img alt="juno-sale-dapp preview" src="https://i.imgur.com/mXh4mxn.gif">
+  <img alt="juno-sale-dapp preview" src="https://i.imgur.com/NyMlLHy.gif">
 </p>
 
 ## Getting Started
@@ -44,13 +44,13 @@ Please ensure you have the [Keplr wallet extension](https://chrome.google.com/we
 
 ## Learn More
 
-To learn more about Next.js, CosmosJS, Keplr, and Tailwind CSS - take a look at the following resources:
+To learn more about Next.js, CosmJS, Keplr, and Tailwind CSS - take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [CosmosJS Repository](https://github.com/cosmostation/cosmosjs) - Cosmos JavaScript library developed by [Cosmostation](https://www.cosmostation.io/).
-- [@cosmjs/cosmwasm-stargate Documentation](https://cosmos.github.io/cosmjs/latest/cosmwasm-stargate/modules.html) - CosmosJS CosmWasm module documentation.
-- [Keplr Wallet Documentation](https://docs.keplr.app/api/cosmjs.html) - using Keplr wallet with CosmosJS.
+- [CosmJS Repository](https://github.com/cosmos/cosmjs) -JavaScript library for Cosmos ecosystem.
+- [@cosmjs/cosmwasm-stargate Documentation](https://cosmos.github.io/cosmjs/latest/cosmwasm-stargate/modules.html) - CosmJS CosmWasm Stargate module documentation.
+- [Keplr Wallet Documentation](https://docs.keplr.app/api/cosmjs.html) - using Keplr wallet with CosmJS.
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs) - utility-first CSS framework.
 - [DaisyUI Documentation](https://daisyui.com/docs/use) - lightweight component library built on [tailwindcss](https://tailwindcss.com/).
 

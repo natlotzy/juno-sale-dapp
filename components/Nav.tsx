@@ -2,6 +2,7 @@ import { useSigningClient } from 'contexts/cosmwasm'
 import Link from 'next/link'
 import Image from 'next/image'
 import ThemeToggle from 'components/ThemeToggle'
+import Emoji from './Emoji'
 
 function Nav() {
   const { walletAddress, connectWallet, disconnect } = useSigningClient()
@@ -20,11 +21,11 @@ function Nav() {
       <nav className="flex flex-wrap text-center md:text-left md:flex flex-row w-full justify-between items-center py-4 ">
         <div className="flex items-center">
           <Link href="/">
-            <a>
+            <a className="text-2xl">
               {PUBLIC_SITE_ICON_URL.length > 0 ? (
-                <Image src={PUBLIC_SITE_ICON_URL} height={32} width={32} />
+                <Image src={PUBLIC_SITE_ICON_URL} alt="logo" height={32} width={32} />
               ) : (
-                <span className="text-2xl">⚛️ </span>
+                <Emoji label="poodle" symbol="🐩" />
               )}
             </a>
           </Link>

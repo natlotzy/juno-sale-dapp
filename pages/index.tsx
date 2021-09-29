@@ -9,6 +9,7 @@ import {
 } from 'util/conversion'
 import { coin } from '@cosmjs/launchpad'
 import { useAlert } from 'react-alert'
+import Emoji from 'components/Emoji'
 
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || 'ujuno'
 const PUBLIC_TOKEN_SALE_CONTRACT = process.env.NEXT_PUBLIC_TOKEN_SALE_CONTRACT || ''
@@ -17,6 +18,7 @@ const PUBLIC_CW20_CONTRACT = process.env.NEXT_PUBLIC_CW20_CONTRACT || ''
 const Home: NextPage = () => {
   const { walletAddress, signingClient, connectWallet } = useSigningClient()
   const [balance, setBalance] = useState('')
+  const [cw20Balance, setCw20Balance] = useState('')
   const [walletAmount, setWalletAmount] = useState(0)
   const [loadedAt, setLoadedAt] = useState(new Date())
   const [loading, setLoading] = useState(false)
@@ -37,6 +39,16 @@ const Home: NextPage = () => {
     }).catch((error) => {
       alert.error(`Error! ${error.message}`)
       console.log('Error signingClient.getBalance(): ', error)
+    })
+
+    // Gets cw20 balance
+    signingClient.queryContractSmart(PUBLIC_CW20_CONTRACT, {
+      balance: { address: walletAddress },
+    }).then((response) => {
+      setCw20Balance(response.balance)
+    }).catch((error) => {
+      alert.error(`Error! ${error.message}`)
+      console.log('Error signingClient.queryContractSmart() balance: ', error)
     })
   }, [signingClient, walletAddress, loadedAt, alert])
 
@@ -99,6 +111,7 @@ const Home: NextPage = () => {
       undefined,
       [coin(parseInt(convertDenomToMicroDenom(purchaseAmount), 10), 'ujuno')]
     ).then((response) => {
+      setPurchaseAmount('')
       setLoadedAt(new Date())
       setLoading(false)
       alert.success('Successfully purchased!')
@@ -111,10 +124,27 @@ const Home: NextPage = () => {
 
   return (
     <WalletLoader loading={loading}>
-      <p className="text-primary">Your wallet has {balance}</p>
+      {balance && (
+        <p className="text-primary">
+          <span>{`Your wallet has ${balance} `}</span>
+          <Emoji label="dog2" symbol="🐕" />
+        </p>
+      )}
 
-      <h1 className="text-5xl mt-10 mb-12">
-        Buy {tokenInfo.name}
+      {cw20Balance && (
+        <p className="mt-2 text-primary">
+          <span>{`and ${cw20Balance} ${tokenInfo.symbol} `}</span>
+          <Emoji label="poodle" symbol="🐩" />
+        </p>
+      )}
+
+      <h1 className="mt-10 text-5xl font-bold">
+        Buy
+      </h1>
+      <h1 className="mt-4 mb-10 text-5xl font-bold">
+        <Emoji label="dog" symbol="🐶" />
+        <span>{` ${tokenInfo.name} `}</span>
+        <Emoji label="dog" symbol="🐶" />
       </h1>
 
       <div className="form-control">
@@ -124,9 +154,10 @@ const Home: NextPage = () => {
             id="purchase-amount"
             placeholder="Amount"
             step="0.1"
-            className="w-full pr-16 input input-lg input-primary input-bordered font-mono"
+            className="w-full input input-lg input-primary input-bordered font-mono"
             onChange={handleChange}
             value={purchaseAmount}
+            style={{ paddingRight: '10rem' }}
           /> 
           <button
             className="absolute top-0 right-0 rounded-l-none btn btn-lg btn-primary"
@@ -141,7 +172,8 @@ const Home: NextPage = () => {
         <div className="mt-8">
           You are getting
           <h1 className="text-3xl mt-3 text-primary">
-            {numToken} {tokenInfo.symbol}
+            <span>{`${numToken} ${tokenInfo.symbol} `}</span>
+            <Emoji label="poodle" symbol="🐩" />
           </h1>
         </div>
       )}
